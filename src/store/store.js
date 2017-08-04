@@ -10,17 +10,22 @@ const state = {
     timeline: [],
     allData: [],
     partnerList: [],
-    partnerAdded: false,
-    accountMangerData: [],
-    consumeDataType : '',
-    userInfo:null
+    platTableData: [],
+    joinTableData: [],
+    keepParnterAccount:[]
 }
 
 const mutations = {
+    addPlatAcount(state, {obj}) {
+        state.platTableData.push(obj)
+    },
+    addJoinAcount(state, {obj}) {
+        state.joinTableData.push(obj)
+    },
     consumeData_evaluation(state, { newArr }) {
         console.log('[[ consumeData_evaluation is commited ]]')
         state.consumeData = newArr.newArr
-        console.log(state.consumeData)
+        // console.log(state.consumeData)
     },
     earningDate_detail(state, { arr }) {
         console.log('[[ earningDate_detail is commited ]]')
@@ -30,9 +35,6 @@ const mutations = {
         console.log('[[ settlementDate_detail is commited ]]')
         state.settlementDate = arr
     },
-    addAcount(state, {obj}) {
-        state.accountMangerData.unshift(obj)
-    },
     setTimeLine(state, { obj }) {
         console.log('[[ timeline is setted ]]')
         state.timeline = obj
@@ -41,24 +43,27 @@ const mutations = {
         console.log('[[ setAllData is setted ]]')
         state.allData = obj
     },
-    recodeConsumeDataType(state, dateType){
-        state.consumeDataType = dateType
-    },
-    setPartnerList(state, obj) {
+    setPartnerList(state, { arr }) {
         console.log('[[ setPartnerList ]]')
         // console.log(arr.newArr)
+        var arr2 = arr.newArr
+        var arrDeled = []
+        for (var i = 0; i < arr2.length; i++) {
             var newoObj = {}
-            newoObj.name = obj.name
-            newoObj.sex = obj.sex
-            newoObj.IDcard = obj.idCard
-            newoObj.tel = obj.phoneNo
-            newoObj.email = obj.email
-            newoObj.cars = obj.bikeNum
-            newoObj.partnerId = obj.id
-            state.partnerList.push(newoObj)
+            newoObj.name = arr2[i].name
+            newoObj.sex = arr2[i].sex
+            newoObj.IDcard = arr2[i].idCard
+            newoObj.tel = arr2[i].phoneNo
+            newoObj.email = arr2[i].email
+            newoObj.cars = arr2[i].bikeNum
+            newoObj.partnerId = arr2[i].id
+            arrDeled.push(newoObj)
+        }
+        state.partnerList = arrDeled
+        console.log(arrDeled)
     },
-    getUserInfo(state,obj){
-        state.userInfo = obj
+    keepParnterAccount(state,obj){
+        state.keepParnterAccount.unshift(obj)
     }
 }
 

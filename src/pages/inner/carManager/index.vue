@@ -136,11 +136,11 @@ export default {
       console.log(`当前页: ${val}`);
     },
     handleList () {
-        var radio = this.checkList
+        var radio = this.checkList.toString()
         var startTime, endTime
         if (this.form.data1 === '' || this.form.data2 === '') {
-          startTime = null
-          endTime = null
+          startTime = ''
+          endTime = ''
         } else {
           startTime = moment(this.form.data1).format('YYYY-MM-DD')
           endTime = moment(this.form.data2).format('YYYY-MM-DD')
@@ -149,19 +149,19 @@ export default {
         this.isQuery = true
         if(this.checkList.length>0){
           request
-          .post(host + 'franchisee/bikeManager/getBikes')
+          .post(host + 'beepartner/bike/findBike')
           .send({
-            end: endTime,
-            start:startTime,
-            state:this.checkList.length>0?this.checkList:null,
-            name:this.terminalNumber?this.terminalNumber:null
+            'startOnlineTime': startTime,
+            'endOnlineTime':endTime,
+            'bikeState':radio,
+            'keyName':this.terminalNumber
           })
           .end((error, res) => {
             if (error) {
               console.log('error:', error)
             } else {
-              console.log(JSON.parse(res.text).list)
-              var data = (JSON.parse(res.text)).list
+              console.log(JSON.parse(res.text).data)
+              var data = (JSON.parse(res.text)).data
               var newData = this.tableDataDel(data)
               this.pagetotal = (JSON.parse(res.text)).totalPage
               if(this.pagetotal>1){
@@ -181,12 +181,12 @@ export default {
           this.isQuery = false
           this.currentPage3 = 1
           request
-            .post(host + 'franchisee/bikeManager/getBikes')
+            .post(host + 'beepartner/bike/findBike')
             .send({
-              end: endTime,
-              start: startTime,
-              state:this.checkList.length>0?this.checkList:null,
-              name:this.terminalNumber?this.terminalNumber:null
+              'startOnlineTime': startTime,
+              'endOnlineTime':endTime,
+              'bikeState':radio,
+              'keyName':this.terminalNumber
             })
             .end((error, res) => {
               if (error) {
@@ -194,7 +194,7 @@ export default {
                 this.emptyText  = '暂无数据'
                 console.log('error:', error)
               } else {
-                var data = JSON.parse(res.text).list
+                var data = JSON.parse(res.text).data
                 var newData = this.tableDataDel(data)
                 this.pagetotal = (JSON.parse(res.text)).totalPage
                 this.tableData = newData
@@ -242,12 +242,12 @@ export default {
             })
           }else{
              request
-              .post(host + 'franchisee/bikeManager/getBikes')
+              .post(host + 'beepartner/bike/findBike')
               .send({
-                end: endTime,
-                start: startTime,
-                state:that.checkList.length>0?that.checkList:null,
-                name:that.terminalNumber!==''?that.terminalNumber:null
+                'startOnlineTime': startTime,
+                'endOnlineTime':endTime,
+                'bikeState':radio,
+                'keyName':this.terminalNumber
               })
               .end((error, res) => {
                 if (error) {
@@ -255,7 +255,7 @@ export default {
                   this.emptyText  = '暂无数据'
                   console.log('error:', error)
                 } else {
-                  var data = JSON.parse(res.text).list
+                  var data = JSON.parse(res.text).data
                   var newData = this.tableDataDel(data)
                   this.pagetotal = (JSON.parse(res.text)).totalPage
                   this.tableData = newData
@@ -280,12 +280,12 @@ export default {
             })
           }else{
             request
-              .post(host + 'franchisee/bikeManager/getBikes')
+              .post(host + 'beepartner/bike/findBike')
                 .send({
-                  end: endTime,
-                  start: startTime,
-                  state:that.checkList.length>0?that.checkList:null,
-                  name:that.terminalNumber
+                  'startOnlineTime': startTime,
+                  'endOnlineTime':endTime,
+                  'bikeState':radio,
+                  'keyName':this.terminalNumber
                 })
                 .end((error, res) => {
                   if (error) {
@@ -293,7 +293,7 @@ export default {
                     this.emptyText  = '暂无数据'
                     console.log('error:', error)
                   } else {
-                    var data = JSON.parse(res.text).list
+                    var data = JSON.parse(res.text).data
                     var newData = this.tableDataDel(data)
                     this.pagetotal = (JSON.parse(res.text)).totalPage
                     this.tableData = newData
@@ -313,12 +313,6 @@ export default {
          
         }
         return
-        // if(_startTime.length>1&&_endTime<=1){
-        //   this.$message({
-        //     type: 'error',
-        //     message: '请输入结束日期'
-        //   })
-        // }
       }
     },
     tableDataDel (arr) {
@@ -333,7 +327,7 @@ export default {
         if (arr[i].onlineTime == '') {
           obj.onlineTime = ''
         } else {
-          obj.onlineTime = moment(arr[i].onlineTime).format('YYYY-MM-DD HH:MM:ss')
+          obj.onlineTime = moment(arr[i].onlineTime).format('YYYY-MM-DD HH:mmM:ss')
         }
         obj.state = arr[i].state
         obj.orderNum = arr[i].orderNum
@@ -365,12 +359,12 @@ export default {
             endTime = moment(this.form.data2).format('YYYY-MM-DD')
           }
           request
-              .post(host + 'franchisee/bikeManager/getBikes?page=' + val)
+              .post(host + 'beepartner/bike/findBike')
               .send({
-                end: this.form.data2.trim().length>0?this.form.data2:null,
-                start: this.form.data1.trim().length>0?this.form.data1:null,
-                state:this.checkList.length>0?this.checkList:null,
-                name:this.terminalNumber?this.terminalNumber:null
+                'startOnlineTime': startTime,
+                'endOnlineTime':endTime,
+                'bikeState':radio,
+                'keyName':this.terminalNumber
               })
               .end((error, res) => {
                 if (error) {
@@ -395,22 +389,21 @@ export default {
     },
     mountedWay () {
       this.loading2 = true
-      var startTime = null
-      var endTime = null
+      var startTime,endTime
       if (this.form.data1 === '' || this.form.data2 === '') {
-        startTime = null
-        endTime = null
+        startTime = ''
+        endTime = ''
       } else {
         startTime = moment(this.form.data1).format('YYYY-MM-DD')
         endTime = moment(this.form.data2).format('YYYY-MM-DD')
       }
       request
-        .post(host + 'franchisee/bikeManager/getBikes')
+        .post(host + 'beepartner/bike/findBike')
         .send({
-          end: endTime,
-          start: startTime,
-          state:this.checkList.length>0?this.checkList:null,
-          name:this.terminalNumber?this.terminalNumber:null
+          'startOnlineTime': startTime,
+          'endOnlineTime': endTime,
+          'bikeState': this.checkList.toString(),
+          'keyName': this.terminalNumber
         })
         .end((error, res) => {
           if (error) {
@@ -418,7 +411,7 @@ export default {
             this.emptyText  = '暂无数据'
             console.log('error:', error)
           } else {
-            var data = JSON.parse(res.text).list
+            var data = JSON.parse((res.text).data)
             var newData = this.tableDataDel(data)
             this.pagetotal = (JSON.parse(res.text)).totalPage
             this.tableData = newData
@@ -452,12 +445,12 @@ export default {
             console.log(this.form.data2.length)
             //return
             request
-              .post(host + 'franchisee/bikeManager/getBikes?page=' + val)
+              .post(host + 'beepartner/bike/findBike')
               .send({
-                end: endTime,
-                start: startTime,
-                state:this.checkList.length>0?this.checkList:null,
-                name:this.terminalNumber!==''?this.terminalNumber:null
+                'startOnlineTime': startTime,
+                'endOnlineTime':endTime,
+                'bikeState':radio,
+                'keyName':this.terminalNumber
               })
               .end((error, res) => {
                 if (error) {
@@ -479,12 +472,12 @@ export default {
               })
           }else{
             request
-              .post(host + 'franchisee/bikeManager/getBikes?page=' + val)
+              .post(host + '')
               .send({
-                end: endTime,
-                start: startTime,
-                state:this.checkList.length>0?this.checkList:null,
-                name:this.terminalNumber?this.terminalNumber:null
+                'startOnlineTime': startTime,
+                'endOnlineTime':endTime,
+                'bikeState':radio,
+                'keyName':this.terminalNumber
               })
               .end((error, res) => {
                 if (error) {
