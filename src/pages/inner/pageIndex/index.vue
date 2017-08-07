@@ -279,6 +279,8 @@ div.settlementInfo div.el-col-8:nth-child(3){text-align: right;}
 <script>
 import myCanvas from '../../../components/highChartRectIndex.vue'
 import Gamp from '../../../components/map.vue'
+import request from 'superagent'
+import {host} from '../../../config/index'
 export default {
   data: function () {
     return {
@@ -327,6 +329,21 @@ export default {
     Gamp
   },
   methods:{
+  },
+  mounted:function(){
+     request
+     .post(host + 'franchisee/home/allianceIndex')
+      .withCredentials()
+      .set({
+        'content-type': 'application/x-www-form-urlencoded'
+      })
+     .end((err, res) => {
+       if (err) {
+         console.log(err)
+       } else {
+         var result = JSON.parse(res.text).data
+       }
+     })
   }
 }
 </script>

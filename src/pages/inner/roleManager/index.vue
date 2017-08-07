@@ -27,7 +27,7 @@
               <el-input v-model="form.roleName" placeholder="请输入角色名称"></el-input>
             </el-form-item>
             <el-form-item label="备注" class="rolename"  :label-width="formLabelWidth">
-              <el-input type="textarea" v-model="form.des"></el-input>
+              <el-input type="textarea" v-model="form.description"></el-input>
             </el-form-item>
             <el-form-item label="权限列表" class="rolename"  :label-width="formLabelWidth">
               <el-tree
@@ -47,14 +47,14 @@
       </h1>
   
       <!-- 表单 -->
-      <el-table :data="tableData" style="width: 100%; font-size:13px;" v-loading="loading">
+      <el-table :data="tableData" style="width: 100%; font-size:13px;" v-loading="loading2">
         <el-table-column prop="roleName" label="角色名称"  min-width="160"></el-table-column>
-        <el-table-column prop="des" label="备注" min-width="160"></el-table-column>
+        <el-table-column prop="description" label="备注" min-width="160"></el-table-column>
         <el-table-column label="包含用户" min-width="170">
           <template scope="scope">
             <ul class="roleList">
               <el-tag
-                v-for="name in scope.row.names"
+                v-for="name in scope.row.franchiseeUserList"
                 :key="name"
                 type="gray"
               >
@@ -82,7 +82,7 @@
                     <el-input v-model="editForm.roleName" placeholder="请输入角色名称"></el-input>
                   </el-form-item>
                   <el-form-item label="备注" :label-width="formLabelWidth">
-                    <el-input type="textarea" v-model="editForm.des"></el-input>
+                    <el-input type="textarea" v-model="editForm.description"></el-input>
                   </el-form-item>
                   <el-form-item label="权限列表" :label-width="formLabelWidth">
                     <el-tree
@@ -136,6 +136,7 @@ export default {
         }
       }
     return {
+      flag: false,
       isQuery:false,
       currentPage3:1,
       totalItems:1,
@@ -151,6 +152,8 @@ export default {
       tableData: [],
       initData: [],
       fathCode: [],
+      menuStr:'',
+      menuList:[],
       childrenCode: [],
       router_show: false,
       defaultProps: {
@@ -170,80 +173,88 @@ export default {
                 id: 1200,
                 label: '车辆管理'
               },
+               {
+                id: 1401,
+                label: '订单明细'
+              },
               {
                 id: 1300,
-                label: '报表管理',
+                label: '报表统计',
                 children: [
                   {
                     id: 1301,
-                    label: '消费数据'
+                    label: '订单数据'
                   },
-                  {
-                    id: 1302,
-                    label: '24小时数据走势'
-                  },
-                  {
-                    id: 1303,
-                    label: '热力图'
-                  },
-                  {
-                    id: 1304,
-                    label: '异常数据'
-                  }
+                  // {
+                  //   id: 1302,
+                  //   label: '24小时数据走势'
+                  // },
+                  // {
+                  //   id: 1303,
+                  //   label: '热力图'
+                  // },
+                  // {
+                  //   id: 1304,
+                  //   label: '异常数据'
+                  // }
                 ]
               },
               {
-                id: 2000,
-                label: '合伙人管理'
+                id: 1402,
+                label: '结算管理'
               },
-              {
-                id: 1400,
-                label: '营收管理',
-                children: [
-                  {
-                    id: 1401,
-                    label: '收益明细'
-                  },
-                  {
-                    id: 1402,
-                    label: '结算记录'
-                  },
-                ]
+              // {
+              //   id: 2000,
+              //   label: '合伙人管理'
+              // },
+              // {
+              //   id: 1400,
+              //   label: '营收管理',
+              //   children: [
+              //     {
+              //       id: 1401,
+              //       label: '收益明细'
+              //     },
+              //     {
+              //       id: 1402,
+              //       label: '结算记录'
+              //     },
+              //   ]
+              // },
+               {
+                id: 1600,
+                label: '个人中心'
               },
               {
                 id: 1500,
                 label: '账号管理'
               },
               {
-                id: 1600,
-                label: '个人中心'
-              },
-              {
                 id: 1700,
                 label: '角色管理'
               },
-              {
-                id: 1800,
-                label: '信息中心'
-              },
-              {
-                id: 1900,
-                label: '日志管理',
-                children: [
-                  {
-                    id: 1901,
-                    label: '登录日志'
-                  },
-                  {
-                    id: 1902,
-                    label: '操作日志'
-                  },
-                ]
-              }
+              // {
+              //   id: 1800,
+              //   label: '信息中心'
+              // },
+              // {
+              //   id: 1900,
+              //   label: '日志管理',
+              //   children: [
+              //     {
+              //       id: 1901,
+              //       label: '登录日志'
+              //     },
+              //     {
+              //       id: 1902,
+              //       label: '操作日志'
+              //     },
+              //   ]
+              // }
             ],
       form: {
         roleName: '',
-        des: ''
+        description: ''
       },
       formLabelWidth: '120px',
       editForm: {
@@ -261,76 +272,84 @@ export default {
                 id: 1200,
                 label: '车辆管理'
               },
+               {
+                id: 1401,
+                label: '订单明细'
+              },
               {
                 id: 1300,
-                label: '报表管理',
+                label: '报表统计',
                 children: [
                   {
                     id: 1301,
-                    label: '消费数据'
+                    label: '订单数据'
                   },
-                  {
-                    id: 1302,
-                    label: '24小时数据走势'
-                  },
-                  {
-                    id: 1303,
-                    label: '热力图'
-                  },
-                  {
-                    id: 1304,
-                    label: '异常数据'
-                  }
+                  // {
+                  //   id: 1302,
+                  //   label: '24小时数据走势'
+                  // },
+                  // {
+                  //   id: 1303,
+                  //   label: '热力图'
+                  // },
+                  // {
+                  //   id: 1304,
+                  //   label: '异常数据'
+                  // }
                 ]
               },
               {
-                id: 2000,
-                label: '合伙人管理'
+                id: 1402,
+                label: '结算管理'
               },
-              {
-                id: 1400,
-                label: '营收管理',
-                children: [
-                  {
-                    id: 1401,
-                    label: '收益明细'
-                  },
-                  {
-                    id: 1402,
-                    label: '结算记录'
-                  },
-                ]
+              // {
+              //   id: 2000,
+              //   label: '合伙人管理'
+              // },
+              // {
+              //   id: 1400,
+              //   label: '营收管理',
+              //   children: [
+              //     {
+              //       id: 1401,
+              //       label: '收益明细'
+              //     },
+              //     {
+              //       id: 1402,
+              //       label: '结算记录'
+              //     },
+              //   ]
+              // },
+               {
+                id: 1600,
+                label: '个人中心'
               },
               {
                 id: 1500,
                 label: '账号管理'
               },
               {
-                id: 1600,
-                label: '个人中心'
-              },
-              {
                 id: 1700,
                 label: '角色管理'
               },
-              {
-                id: 1800,
-                label: '信息中心'
-              },
-              {
-                id: 1900,
-                label: '日志管理',
-                children: [
-                  {
-                    id: 1901,
-                    label: '登录日志'
-                  },
-                  {
-                    id: 1902,
-                    label: '操作日志'
-                  },
-                ]
-              }
+              // {
+              //   id: 1800,
+              //   label: '信息中心'
+              // },
+              // {
+              //   id: 1900,
+              //   label: '日志管理',
+              //   children: [
+              //     {
+              //       id: 1901,
+              //       label: '登录日志'
+              //     },
+              //     {
+              //       id: 1902,
+              //       label: '操作日志'
+              //     },
+              //   ]
+              // }
             ]
       },
       rules: {
@@ -347,6 +366,44 @@ export default {
       handleCurrentChange(val) {
         console.log(`当前页: ${val}`);
       },
+    loadRole () {
+      var that = this
+      this.loading2 = true
+       request
+     .post(host + 'beepartner/Franchisee/Role/findFranchiseeRole')
+      .withCredentials()
+      .set({
+        'content-type': 'application/x-www-form-urlencoded'
+      })
+      .send({
+        currentPage:1,
+        roleName: this.roleName.trim()
+      })
+     .end((err, res) => {
+       if (err) {
+         console.log(err)
+         this.loading2 = false
+       } else {
+         this.loading2 = false
+         var result = JSON.parse(res.text).data
+         var totalPage = JSON.parse(res.text).totalPage
+         var newArr = result.map((item)=>{
+            var arr = item.franchiseeUserList.map((item)=>{
+              return item.userName
+            })
+           return Object.assign({},item,{franchiseeUserList:arr})
+         })
+         if(totalPage>1){
+           this.pageShow = true
+         }else {
+           this.pageShow = false
+         }
+         this.totalItems = Number(JSON.parse(res.text).totalItems)
+         that.tableData  = newArr
+         that.initData = that.tableData
+       }
+     })
+    },
     initRole(){
       this.isQuery = false
       this.currentPage3 = 1
@@ -391,44 +448,43 @@ export default {
       var that = this
       if(this.roleName.trim().length!==0){
         this.isQuery = true
-        request.post(host + 'franchisee/account/queryRole')
-          .send({
-            roleName: this.roleName.trim()
-          })
-          .end(function(error,res){
-            if(error){
-              console.log(error)
-            }else {
-               var result = JSON.parse(res.text).list
-                var totalPage = JSON.parse(res.text).totalPage
-                if(totalPage>1){
-                  that.pageShow = true
-                }else {
-                  that.pageShow = false
-                }
-                that.totalItems = JSON.parse(res.text).totalItems
-                var newArr = result.map(function(item, index) {
-                    console.log(item)
-                    var res = item.auth.split('-')
-                    var fathCode = []
-                    var childrenCode = []
-                    for(var i=0; i < res.length; i++){
-                      if(res[i] % 100 == 0) {
-                        fathCode.push(Number(res[i]))
-                      } else {
-                        childrenCode.push(Number(res[i]))
-                      }
-                    }
-                    var obj = Object.assign({},item, {fathCode: fathCode},{childrenCode: childrenCode})
-                    return obj
+        request
+          .post(host + 'beepartner/Franchisee/Role/findFranchiseeRole')
+            .withCredentials()
+            .set({
+              'content-type': 'application/x-www-form-urlencoded'
+            })
+            .send({
+              currentPage:1,
+              roleName: this.roleName.trim()
+            })
+          .end((err, res) => {
+            if (err) {
+              console.log(err)
+            } else {
+              var result = JSON.parse(res.text).data
+              var totalPage = JSON.parse(res.text).totalPage
+              var newArr = result.map((item)=>{
+                  var arr = item.franchiseeUserList.map((item)=>{
+                    return item.userName
                   })
-                that.tableData  = newArr
+                return Object.assign({},item,{franchiseeUserList:arr})
+              })
+              if(totalPage>1){
+                this.pageShow = true
+              }else {
+                this.pageShow = false
+              }
+              this.totalItems = Number(JSON.parse(res.text).totalItems)
+              that.tableData  = newArr
+              that.initData = that.tableData
             }
           })
       }
     },
     openAddRole () {
       this.dialogFormVisible = true
+      this.flag = false
     },
     openEditRole (scope) {
       this.dialogEditVisible = true
@@ -444,35 +500,36 @@ export default {
     },
     handleEditRole () {
       var that = this
-      var authList = this.getCheckedKeys().map((item)=>{
-        return {code: item}
+      this.menuList = this.getCheckedKeys().map((item)=>{
+        return item
       })
+      console.log(this.menuList)
+      this.menuStr = this.menuList.join('-')
       request
-        .post(host + 'franchisee/account/updateRole')
+        .post(host + 'beepartner/admin/Role/updateRole')
+        .withCredentials()
+        .set({
+          'content-type': 'application/x-www-form-urlencoded'
+        })
         .send({
-          oldRole: {
-            id: that.editForm.id
-          },
-          newRole: {
-            id: that.editForm.id,
-            roleType:  that.editForm.roleType,
-            roleName: that.editForm.roleName,
-            des: that.editForm.des,
-            auths: authList
-          }
+          id: that.editForm.id,
+          roleName:that.editForm.roleName,
+          description: that.editForm.description,
+          menuStr: this.menuStr
         })
         .end(function(err,res){
           if(err){
             console.log(err)
           } else {
             that.loading2 = false
-            var code = JSON.parse(res.text).code
-            if(code === 0) {
+            var code = JSON.parse(res.text).resultCode
+            if(code === 1) {
                 that.$message({
                   type: 'success',
                   message: '修改成功!'
                 })
-                that.tableData.splice(that.editForm.index,1,{roleName: that.editForm.roleName,des: that.editForm.des, id: that.editForm.id})
+                that.flag = true
+                //that.tableData.splice(that.editForm.index,1,{roleName: that.editForm.roleName,des: that.editForm.des, id: that.editForm.id})
                 that.dialogEditVisible = false
             } else {
               that.$message({
@@ -492,28 +549,26 @@ export default {
         }).then(() => {
           this.loading = true
           request
-            .post(host + 'franchisee/account/delRole')
+            .post(host + 'beepartner/Franchisee/Role/deleteFranchiseeRole')
+            .withCredentials()
+            .set({
+              'content-type': 'application/x-www-form-urlencoded'
+            })
             .send({
               id: scope.row.id,
-              roleType: scope.row.roleType,
-              roleName: scope.row.roleName,
-              auth: scope.row.auth
             })
             .end((err, res) => {
               if(err) {
                 console.log(err)
               } else {
                 that.loading = false
-                var code = JSON.parse(res.text).code
-                if(code === 0) {
+                var code = JSON.parse(res.text).resultCode
+                if(code === 1) {
                    this.$message({
                       type: 'success',
                       message: '删除成功!'
                     })
                     that.tableData.splice(scope.$index,1)
-                    if(that.tableData.length===0) {
-                      $('.M-box').html('')
-                    }
                 } else {
                   this.$message({
                       type: 'error',
@@ -530,38 +585,41 @@ export default {
         })
     },
     handleAddRole () {
-        var authList = this.getCheckedKeys().map((item)=>{
-          return {code: item}
+        this.menuList = this.getCheckedKeys().map((item)=>{
+          return item
         })
+        this.menuStr = this.menuList.join('-')
         var that = this
-
         this.$refs.ruleForm.validate((valid) => {
           if(valid){
               this.dialogFormVisible = false
               request
-                .post(host + 'franchisee/account/addRole')
+                .post(host + 'beepartner/Franchisee/Role/addFranchiseeRole')
+                .withCredentials()
+                .set({
+                  'content-type': 'application/x-www-form-urlencoded'
+                })
                 .send({
-                  des: that.form.des,
+                  description: that.form.description,
                   roleName: that.form.roleName,
-                  auths: authList,
-                  roleType: that.form.roleName === '管理员'?'0':'1',
-                  belong: 1
+                  menuStr: this.menuStr,
                 })
                 .end((err, res) => {
                   if (err) {
                     console.log(err)
                   } else {
-                    var code = JSON.parse(res.text).code
-                    if(code === 0) {
+                    var code = JSON.parse(res.text).resultCode
+                    if(code === 1) {
                       that.$message({
                         type: 'success',
                         message: '恭喜您！添加角色成功'
                       })
-                     that.tableData.unshift({des: that.form.des,names:[],roleName:that.form.roleName})
+                      this.flag = true
+                      //that.tableData.unshift({description: that.form.description,franchiseeUserList:[],roleName:that.form.roleName})
                     } else {
                       that.$message({
                         type: 'error',
-                        message: 'sorry！角色已存在，请重新添加'
+                        message: 'sorry!添加角色失败'
                       })
                     }
                   }
@@ -577,112 +635,95 @@ export default {
     }
   },
   mounted () {
-    var that = this
-    request
-     .post(host + 'franchisee/account/getRole')
-     .end((err, res) => {
-       if (err) {
-         console.log(err)
-       } else {
-         var result = JSON.parse(res.text).list
-         var totalPage = JSON.parse(res.text).totalPage
-         if(totalPage>1){
-           this.pageShow = true
-         }else {
-           this.pageShow = false
-         }
-         this.totalItems = JSON.parse(res.text).totalItems
-        var newArr = result.map(function(item, index) {
-            var res = item.auth.split('-')
-            var fathCode = []
-            var childrenCode = []
-            for(var i=0; i < res.length; i++){
-              if(res[i] % 100 == 0) {
-                fathCode.push(Number(res[i]))
-              } else {
-                childrenCode.push(Number(res[i]))
-              }
-            }
-            var obj = Object.assign({},item, {fathCode: fathCode},{childrenCode: childrenCode})
-            return obj
-          })
-          console.log(newArr)
-         that.tableData  = newArr
-         that.initData = that.tableData
-       }
-     })
+   this.loadRole()
   },
   watch:{
+    'flag':{
+      handler:function(){
+        if(this.flag){
+          this.loadRole()
+        }else{
+          this.loading2 = false
+          return
+        }
+      },
+      deep:true
+    },
     currentPage3:{
       handler: function(val,oldVal){
         var that = this
         if(this.isQuery===false){
+          this.loading2 = true
           // 初始化查询
-           request
-            .post(host + 'franchisee/account/getRole?page=' + val)
+            request
+            .post(host + 'beepartner/Franchisee/Role/findFranchiseeRole')
+              .withCredentials()
+              .set({
+                'content-type': 'application/x-www-form-urlencoded'
+              })
+              .send({
+                currentPage:val,
+                roleName: this.roleName.trim()
+              })
             .end((err, res) => {
               if (err) {
+               this.loading2 = false
                 console.log(err)
               } else {
-                var result = JSON.parse(res.text).list
+                this.loading2 = false
+                var result = JSON.parse(res.text).data
                 var totalPage = JSON.parse(res.text).totalPage
+                var newArr = result.map((item)=>{
+                    var arr = item.franchiseeUserList.map((item)=>{
+                      return item.userName
+                    })
+                  return Object.assign({},item,{franchiseeUserList:arr})
+                })
                 if(totalPage>1){
                   this.pageShow = true
                 }else {
                   this.pageShow = false
                 }
-                this.totalItems = JSON.parse(res.text).totalItems
-                var newArr = result.map(function(item, index) {
-                    console.log(item)
-                    var res = item.auth.split('-')
-                    var fathCode = []
-                    var childrenCode = []
-                    for(var i=0; i < res.length; i++){
-                      if(res[i] % 100 == 0) {
-                        fathCode.push(Number(res[i]))
-                      } else {
-                        childrenCode.push(Number(res[i]))
-                      }
-                    }
-                    var obj = Object.assign({},item, {fathCode: fathCode},{childrenCode: childrenCode})
-                    return obj
-                  })
+                this.totalItems = Number(JSON.parse(res.text).totalItems)
                 that.tableData  = newArr
+                that.initData = that.tableData
               }
             })
         }else {
           // 筛选查询
-          request.post(host + 'franchisee/account/queryRole?page=' + val)
-          .send({
-            roleName: this.roleName.trim()
-          })
-          .end(function(error,res){
-            if(error){
-              console.log(error)
-            }else {
-                var result = JSON.parse(res.text).list
-                var totalPage = JSON.parse(res.text).totalPage
-                if(totalPage>1){
-                  that.pageShow = true
-                }else {
-                  that.pageShow = false
-                }
-                that.totalItems = JSON.parse(res.text).totalItems
-                var newArr = result.map(function(item, index) {
-                    var res = item.auth.split('-')
-                    var fathCode = []
-                    var childrenCode = []
-                    for(var i=0; i < res.length; i++){
-                      if(res[i] % 100 == 0) {
-                        fathCode.push(Number(res[i]))
-                      } else {
-                        childrenCode.push(Number(res[i]))
-                      }
-                    }
-                    var obj = Object.assign({},item, {fathCode: fathCode},{childrenCode: childrenCode})
-                    return obj
+          this.loading2 = true
+           request
+          .post(host + 'beepartner/Franchisee/Role/findFranchiseeRole')
+            .withCredentials()
+            .set({
+              'content-type': 'application/x-www-form-urlencoded'
+            })
+            .send({
+              currentPage:val,
+              roleName: this.roleName.trim()
+            })
+          .end((err, res) => {
+            if (err) {
+             this.loading2 = false
+              console.log(err)
+            } else {
+             this.loading2 = false
+              var result = JSON.parse(res.text).data
+              var totalPage = JSON.parse(res.text).totalPage
+              var newArr = result.map((item)=>{
+                  var arr = item.franchiseeUserList.map((item)=>{
+                    return item.userName
                   })
-                that.tableData  = newArr
+                return Object.assign({},item,{franchiseeUserList:arr})
+              })
+              if(totalPage>1){
+                this.pageShow = true
+              }else {
+                this.pageShow = false
+              }
+              this.totalItems = Number(JSON.parse(res.text).totalItems)
+              that.tableData  = newArr
+              that.initData = that.tableData
             }
           })
         }
