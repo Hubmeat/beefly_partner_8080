@@ -20,7 +20,7 @@
 			<div id="earD_all">
 				<h1>
           <el-tooltip class="item" effect="dark" content="所有车辆骑行收益" placement="bottom-end"> 
-					  <p>合计：<span>30000元</span></p>
+					  <p>实际收益合计：<span>30000元</span></p>
           </el-tooltip>
 					<p @click='export_excel'>导出明细到Excel</p>
 				</h1>
@@ -36,7 +36,7 @@
       style="width: 100%">
       <el-table-column
         prop="bikeCode"
-        label="车牌编号"
+        label="车辆编号"
         min-width="20%"
         >
       </el-table-column>

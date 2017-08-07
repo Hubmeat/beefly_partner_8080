@@ -116,6 +116,8 @@ export default {
       // 根据用户选择不同状态进行数据的筛选
       this.isQuery = true
       if (this.checkList.length > 0) {
+        this.loading2 = true
+        this.emptyText = ' '
         request
           .post(host + 'beepartner/bike/findBike')
           .withCredentials()
@@ -131,7 +133,10 @@ export default {
           .end((error, res) => {
             if (error) {
               console.log('error:', error)
+               this.loading2 = false
+               this.emptyText = '暂无数据'
             } else {
+               this.loading2 = false
               var data = (JSON.parse(res.text)).data
               var newData = this.tableDataDel(data)
               this.pagetotal = (JSON.parse(res.text)).totalPage
@@ -151,6 +156,7 @@ export default {
       } else {
         this.isQuery = false
         this.currentPage3 = 1
+         this.loading2 = true
         request
           .post(host + 'beepartner/bike/findBike')
           .withCredentials()
@@ -168,7 +174,9 @@ export default {
               this.loading2 = false
               this.emptyText = '暂无数据'
               console.log('error:', error)
+               this.loading2 = false
             } else {
+               this.loading2 = false
               var data = JSON.parse(res.text).data
               var newData = this.tableDataDel(data)
               this.pagetotal = (JSON.parse(res.text)).totalPage
@@ -217,6 +225,7 @@ export default {
               message: '开始日期不能为空'
             })
           } else {
+            this.loading2 = true
             request
               .post(host + 'beepartner/bike/findBike')
               .withCredentials()
@@ -352,13 +361,14 @@ export default {
               var data = (JSON.parse(res.text)).data
               var newData = this.tableDataDel(data)
               this.pagetotal = (JSON.parse(res.text)).totalPage
-              this.totalItems = JSON.parse((JSON.parse(res.text)).totalItems)
+              this.totalItems = Number(JSON.parse((JSON.parse(res.text)).totalItems))
               // loading 关闭
               this.loading2 = false
               this.tableData = newData
               if (this.pagetotal > 1) {
                 this.pageShow = true
               } else {
+                this.pageShow = false
                 return
               }
             }
@@ -415,6 +425,7 @@ export default {
     'checkList': 'handleList',
     currentPage3: {
       handler: function (val, oldVal) {
+        this.loading2  = true
         var startTime = null
         var endTime = null
         if (this.form.data1 === '' || this.form.data2 === '') {
@@ -443,6 +454,7 @@ export default {
             .end((error, res) => {
               if (error) {
                 console.log('error:', error)
+                this.loading2 = false
               } else {
                 console.log(JSON.parse(res.text).data)
                 var data = (JSON.parse(res.text)).data
@@ -469,7 +481,9 @@ export default {
             .end((error, res) => {
               if (error) {
                 console.log('error:', error)
+                this.loading2 = false
               } else {
+                this.loading2 = false
                 var data = (JSON.parse(res.text)).data
                 var newData = this.tableDataDel(data)
                 this.tableData = newData

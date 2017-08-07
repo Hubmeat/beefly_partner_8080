@@ -7,6 +7,7 @@ import './assets/font/iconfont.css'
 import router from './router/index.js'
 import store from './store/store'
 import Vuex from 'vuex'
+import $ from 'jquery'
 // const VueResourceProgressBarInterceptor = require('vue-resource-progressbar-interceptor')
 
 // Vue.use(VueResourceProgressBarInterceptor)
@@ -36,5 +37,20 @@ new Vue({
     store,
     el: '#app',
     router,
-    render: h => h(App)
+    render: h => h(App),
+    methods:{
+        checkInput(){
+            var input = $('input.el-pagination__editor')
+            if(input){
+              input.prop('type','text')
+            }
+            
+        }
+    },
+    mounted () {
+        this.checkInput()
+    }
+     // watch: {
+    //   '$route': 'checkLogin'
+    // }
 })

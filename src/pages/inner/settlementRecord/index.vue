@@ -100,7 +100,7 @@
     color: #ddd;
     font-size: 10px;
     left: 10px;
-    font-style: italic;
+    font-style: normal;
     top: -4px;
   }
 

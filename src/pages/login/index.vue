@@ -9,15 +9,15 @@
             <div class="loginForm">
               <div class="logo"><img src="../../assets/img/footer.png"></div> 
               <el-form label-width="80px" :model="formLabelAlign" :rules="rules" ref="formLabelAlign">
-                <el-form-item class="userClass" prop="username" label="用户名">
-                  <el-input v-model="formLabelAlign.username" placeholder="请输入用户名" autofocus="autofocus" tabindex="1"></el-input>
+                <el-form-item class="userClass" prop="userName" label="用户名">
+                  <el-input v-model="formLabelAlign.userName" placeholder="请输入用户名" autofocus="autofocus" tabindex="1"></el-input>
                 </el-form-item>
-                <el-form-item class="userClass" prop="password" label="密码">
-                  <el-input v-model="formLabelAlign.password" @keyup.enter.native="handleEnter" type="password" placeholder="请输入密码" tabindex="2"></el-input>
+                <el-form-item class="userClass" prop="passWord" label="密码">
+                  <el-input v-model="formLabelAlign.passWord" @keyup.enter.native="handleEnter" type="passWord" placeholder="请输入密码" tabindex="2"></el-input>
                 </el-form-item>
                 <div class="button-group" style="padding-left:81px; margin-top: -5px;">
-                  <el-button class="login" type="primary" name="username" @click="handleSubmit">登录</el-button>
-                  <el-button class="forget_psd" @click="handleFindPsd" name="password">忘记密码</el-button>
+                  <el-button class="login" type="primary" name="userName" @click="handleSubmit">登录</el-button>
+                  <el-button class="forget_psd" @click="handleFindPsd" name="passWord">忘记密码</el-button>
                 </div>
               </el-form>
             </div>
@@ -42,10 +42,10 @@
             <el-dialog title="重置密码" :visible.sync="resetFormVisible">
               <el-form :model="resetForm" :label-position="labelPosition" :rules="resetFormRule" ref="resetForm">
                 <el-form-item label="密码" prop="pass" :label-width="formLabelWidth">
-                  <el-input type="password" v-model="resetForm.pass" auto-complete="off"></el-input>
+                  <el-input type="passWord" v-model="resetForm.pass" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item :label-width="formLabelWidth" label="确认密码" prop="checkPass">
-                  <el-input type="password" v-model="resetForm.checkPass" auto-complete="off"></el-input>
+                  <el-input type="passWord" v-model="resetForm.checkPass" auto-complete="off"></el-input>
                 </el-form-item>
         
               </el-form>
@@ -121,16 +121,16 @@ export default {
       },
       formLabelWidth: '100px',
       formLabelAlign: {
-        username: '',
-        password: ''
+        userName: '',
+        passWord: ''
       },
       dialogFormVisible: false,
       resetFormVisible: false,
       rules: {
-        username: [
+        userName: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
         ],
-        password: [
+        passWord: [
           { required: true, message: '请输入密码', trigger: 'blur' }
         ]
       },
@@ -214,33 +214,37 @@ export default {
       }
     },
     handleSubmit() {
-      if (this.formLabelAlign.username === '' && this.formLabelAlign.password) {
+      if (this.formLabelAlign.userName === '' && this.formLabelAlign.passWord) {
         this.$message({
           message: '请输入用户名和密码',
           type: 'warning'
         })
       } else {
         request
-          .post(host + 'franchisee/franchiseeLogin')
+          .post(host + 'beepartner/system/login/franchiseeLogin')
+           .withCredentials()
+          .set({
+            'content-type': 'application/x-www-form-urlencoded'
+          })
           .send({
-            'name': this.formLabelAlign.username,
-            'password': this.formLabelAlign.password
+            'userName': this.formLabelAlign.userName,
+            'passWord': this.formLabelAlign.passWord
           })
           .end((error, res) => {
             if (error) {
               console.log('error:', error)
             } else {
-              if (JSON.parse(res.text).code === 0) {
+              if (JSON.parse(res.text).resultCode === 1) {
                 this.$message({
                   message: '登录成功！',
                   type: 'success'
                 })
-                var data = JSON.parse(JSON.parse(res.text).data)
-                localStorage.setItem('userinfo',JSON.parse(res.text).data)
-                this.$router.push('/index')
-                this.$store.commit('getUserInfo',data)
+                // var data = JSON.parse(JSON.parse(res.text).data)
+                // localStorage.setItem('userinfo',JSON.parse(res.text).data)
+                // this.$store.commit('getUserInfo',data)
+                 this.$router.push('/index')
               } else {
-                this.$message.error('密码错误');
+                this.$message.error('登录失败');
               }
             }
           })
@@ -295,7 +299,7 @@ export default {
           // 像服务器发送 重置密码的请求
           request.post(host + 'franchisee/account/resetPwd')
             .send({
-              password: that.resetForm.pass
+              passWord: that.resetForm.pass
             })
             .end(function (err, res) {
               if (err) {
