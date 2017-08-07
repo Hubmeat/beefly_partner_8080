@@ -59,6 +59,8 @@
               <el-table
               :data="tableData"
               style="width:100%"
+              v-loading="loading2"
+              element-loading-text="拼命加载中"
             >
               <el-table-column prop="placeOrderTimeStr" label="下单时间">
               </el-table-column>
@@ -174,6 +176,7 @@ import {host} from '../../../config/index'
 export default {
   data: function () {
     return {
+      loading2: false,
       currentPage3:1,
       pageShow:false,
       totalItems:1,
@@ -199,6 +202,7 @@ export default {
   },
   mounted: function () {
     //this.bikeInfo.code = '000000009' 
+    this.loading2 = true
     this.bikeInfo.code = this.$route.query.code
     request.post(host + 'beepartner/admin/Bike/getBikeDetail')
      .withCredentials()
@@ -211,8 +215,9 @@ export default {
       .end((error,res)=>{
         if(error){
           console.log(error)
+           this.loading2 = false
         }else {
-          
+           this.loading2 = false
           this.bikeInfo = Object.assign({},JSON.parse(res.text).bike,{onlineTime:moment(JSON.parse(res.text).bike.onlineTime).format('YYYY-MM-DD')})
 
           this.tableData = JSON.parse(res.text).data
@@ -414,6 +419,7 @@ export default {
   watch:{
     currentPage3:{
       handler: function(val,oldVal){
+      this.loading2 = true
        request.post(host + 'beepartner/admin/Bike/getBikeDetail')
         .withCredentials()
           .set({
@@ -426,8 +432,9 @@ export default {
         .end((error,res)=>{
           if(error){
             console.log(error)
+            this.loading2 = false
           }else {
-            
+            this.loading2 = false
             this.bikeInfo = Object.assign({},JSON.parse(res.text).bike,{onlineTime:moment(JSON.parse(res.text).bike.onlineTime).format('YYYY-MM-DD')})
             this.tableData = JSON.parse(res.text).data
             this.totalPage = JSON.parse(res.text).totalPage

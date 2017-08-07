@@ -415,6 +415,7 @@ export default {
     'checkList': 'handleList',
     currentPage3: {
       handler: function (val, oldVal) {
+        this.loading2  = true
         var startTime = null
         var endTime = null
         if (this.form.data1 === '' || this.form.data2 === '') {
@@ -443,6 +444,7 @@ export default {
             .end((error, res) => {
               if (error) {
                 console.log('error:', error)
+                this.loading2 = false
               } else {
                 console.log(JSON.parse(res.text).data)
                 var data = (JSON.parse(res.text)).data
@@ -469,7 +471,9 @@ export default {
             .end((error, res) => {
               if (error) {
                 console.log('error:', error)
+                this.loading2 = false
               } else {
+                this.loading2 = false
                 var data = (JSON.parse(res.text)).data
                 var newData = this.tableDataDel(data)
                 this.tableData = newData
