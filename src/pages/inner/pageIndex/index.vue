@@ -28,11 +28,34 @@
         </el-col>
       </el-row>
     </div>
+      <div class="hotmap module">
+      <div class="mapHeader">
+        <div class="mapTitle">
+          <el-row>
+            <!-- <el-col :span="10">
+              <span>运营热力图
+              </span>
+              <span  style="font-size:12px;color:rgba(148,148,148,1);">每十分钟自动刷新</span>
+            </el-col> -->
+            <el-col :span="24">
+              <el-col :span="5">车辆总数2000辆</el-col>
+              <el-col :span="5" class="using">待出租1900辆</el-col>
+              <el-col :span="5">已出租99辆</el-col>
+              <el-col :span="5">已预定1辆</el-col>
+              <el-col :span="4">维护中1辆 <span  style=" float:right;cursor:pointer" class="arrow">&gt;&gt;</span></el-col>
+            </el-col>
+          </el-row>
+        </div>
+        <!-- <div class="mapWrap">
+          <Gamp></Gamp>
+        </div> -->
+      </div>
+    </div>
     <div class="statuAndData module">
       <el-row>
         <el-col :span='12' class="datas">
           <div class="datas_title">
-            <span class="data_display ">数据分布
+            <span class="data_display ">24小时趋势
             </span>
             <span  style="font-weight:normal;font-size:12px;color:rgba(148,148,148,1);">时间段内车辆接单数,每10分钟自动刷新</span>
             <span class="arrow" @click="$router.push({path:'/index/allDaysData?type=0'})">>></span>
@@ -80,28 +103,7 @@
       </div>
     </div>
   
-    <div class="hotmap module">
-      <div class="mapHeader">
-        <div class="mapTitle">
-          <el-row>
-            <el-col :span="10">
-              <span>运营热力图
-              </span>
-              <span  style="font-size:12px;color:rgba(148,148,148,1);">每十分钟自动刷新</span>
-            </el-col>
-            <el-col :span="14">
-              <el-col :span="6">车辆总数2000辆</el-col>
-              <el-col :span="6" class="using">使用中1900辆</el-col>
-              <el-col :span="6">维修中99辆</el-col>
-              <el-col :span="6">已报废1辆 <span  style=" float:right;cursor:pointer" class="arrow" @click="$router.push({path:'/index/hotMap?type=curHour'})">&gt;&gt;</span></el-col>
-            </el-col>
-          </el-row>
-        </div>
-        <div class="mapWrap">
-          <Gamp></Gamp>
-        </div>
-      </div>
-    </div>
+  
   </div>
 </template>
 <style scoped>

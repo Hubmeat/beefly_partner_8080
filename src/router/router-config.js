@@ -90,24 +90,24 @@ export default [
                     }
                 ]
             },
-            {
-                path: '/index/allDaysData',
-                name: '24小时数据走势',
-                auth: 1302,
-                component: allDaysData
-            },
-            {
-                path: '/index/hotMap',
-                name: '热力图',
-                auth: 1303,
-                component: hotMap
-            },
-            {
-                path: '/index/abnormalData',
-                name: '异常数据',
-                auth: 1304,
-                component: abnormalData
-            },
+            // {
+            //     path: '/index/allDaysData',
+            //     name: '24小时数据走势',
+            //     auth: 1302,
+            //     component: allDaysData
+            // },
+            // {
+            //     path: '/index/hotMap',
+            //     name: '热力图',
+            //     auth: 1303,
+            //     component: hotMap
+            // },
+            // {
+            //     path: '/index/abnormalData',
+            //     name: '异常数据',
+            //     auth: 1304,
+            //     component: abnormalData
+            // },
             {
                 path: '/index/partnerManager',
                 name: '合伙人管理',

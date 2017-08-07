@@ -60,15 +60,15 @@
               :data="tableData"
               style="width:100%"
             >
-              <el-table-column prop="chargeTime" label="下单时间">
+              <el-table-column prop="placeOrderTimeStr" label="下单时间">
               </el-table-column>
-              <el-table-column label="骑行时间（分钟）" prop="time">
+              <el-table-column label="骑行时间（分钟）" prop="rideTime">
 
               </el-table-column>
-              <el-table-column label="里程（公里）" prop="mileage">
+              <el-table-column label="里程（公里）" prop="rideMileage">
 
               </el-table-column>
-              <el-table-column label="订单费用" prop="money">
+              <el-table-column label="订单费用" prop="actualAmount">
 
               </el-table-column>
               <el-table-column label="优惠券支付" prop="couponAmount">
@@ -200,21 +200,24 @@ export default {
   mounted: function () {
     //this.bikeInfo.code = '000000009' 
     this.bikeInfo.code = this.$route.query.code
-    request.post(host + 'franchisee/franchiseeManager/getBikeDetail?bikeCode='+ this.bikeInfo.code +'&page=1&size=10')
+    request.post(host + 'beepartner/admin/Bike/getBikeDetail')
+     .withCredentials()
+          .set({
+            'content-type': 'application/x-www-form-urlencoded'
+          })
+      .send({
+        code:this.bikeInfo.code,
+      })
       .end((error,res)=>{
         if(error){
           console.log(error)
         }else {
           
           this.bikeInfo = Object.assign({},JSON.parse(res.text).bike,{onlineTime:moment(JSON.parse(res.text).bike.onlineTime).format('YYYY-MM-DD')})
-          var newArr = JSON.parse(res.text).pageList.list.map((item)=>{
-            var obj = Object.assign({},item,{chargeTime:moment(item.chargeTime).format('YYYY-MM-DD')})
-            return obj
-          })
 
-          this.tableData = newArr
-          this.totalPage = JSON.parse(res.text).pageList.totalPage
-          this.totalItems = JSON.parse(res.text).pageList.totalItems
+          this.tableData = JSON.parse(res.text).data
+          this.totalPage = JSON.parse(res.text).totalPage
+          this.totalItems = Number(JSON.parse(res.text).totalItems)
             if(this.totalPage>1){
               this.pageShow  = true
             }else {
@@ -411,20 +414,24 @@ export default {
   watch:{
     currentPage3:{
       handler: function(val,oldVal){
-        request.post(host + 'franchisee/franchiseeManager/getBikeDetail?bikeCode='+ this.bikeInfo.code +'&page=' + val + '&size=10')
+       request.post(host + 'beepartner/admin/Bike/getBikeDetail')
+        .withCredentials()
+          .set({
+            'content-type': 'application/x-www-form-urlencoded'
+          })
+      .send({
+        code:this.bikeInfo.code,
+        currentPage:val,
+      })
         .end((error,res)=>{
           if(error){
             console.log(error)
           }else {
             
             this.bikeInfo = Object.assign({},JSON.parse(res.text).bike,{onlineTime:moment(JSON.parse(res.text).bike.onlineTime).format('YYYY-MM-DD')})
-            var newArr = JSON.parse(res.text).pageList.list.map((item)=>{
-              var obj = Object.assign({},item,{chargeTime:moment(item.chargeTime).format('YYYY-MM-DD')})
-              return obj
-            })
-            this.tableData = newArr
-            this.totalPage = JSON.parse(res.text).pageList.totalPage
-            this.totalItems = JSON.parse(res.text).pageList.totalItems
+            this.tableData = JSON.parse(res.text).data
+            this.totalPage = JSON.parse(res.text).totalPage
+            this.totalItems = Number(JSON.parse(res.text).totalItems)
               if(this.totalPage>1){
                 this.pageShow  = true
               }else {
